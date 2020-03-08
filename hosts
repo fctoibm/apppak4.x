@@ -1,0 +1,12 @@
+
+[kvmhost]
+127.0.0.1 ansible_connection=local
+
+[vmwarehost]
+127.0.0.1 ansible_connection=local
+
+
+[vmguest]
+10.75.30.227  ansible_user=root  ansible_ssh_pass=passw0rd
+
+

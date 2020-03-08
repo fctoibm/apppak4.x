@@ -1,0 +1,5 @@
+all:
+  hosts:
+    kvmhost:
+      entitled-setup:
+      ansible_python_interpreter: /usr/bin/python

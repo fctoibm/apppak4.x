@@ -1,0 +1,81 @@
+
+
+
+base_domain: "os.fisc.lab"
+base_domain_prefix: "dev"
+
+#Openshift information 
+ocp_api_fqdn: api.{{ base_domain_prefix }}.{{ base_domain }} 
+ocp_auth_fdqn: oauth-openshift.apps.{{ base_domain_prefix }}.{{ base_domain }} 
+ocp_api_port: 6443
+ocp_ip: 10.75.30.211
+oc_admin_user: "kubeadmin"
+oc_admin_password: "your password goes here"
+
+# Application Pak Entitlement Information
+ICPA_VERSION: "4.0.1"
+ENTITLED_REGISTRY: "cp.icr.io"
+ENTITLED_REGISTRY_USER: "ekey"
+# Follow the instruction ( https://github.ibm.com/CloudPakOpenContent/cloudpak-entitlement/ )to download token
+ENTITLED_REGISTRY_KEY: ""
+
+
+# VMware info
+
+# Vmware information
+
+target_esxi_ip: "10.75.30.135"
+target_esxi_username: ""
+target_esxi_password: ""
+target_esx_datastore: "FISCICP_SAN_03"
+target_esx_portgroup: "VM Network"
+
+vcenter_iso_name: "VMware-VCSA-all-6.7.0-13010631"
+vcenter_username: "demouser@vsphere.local"
+vcenter_password: ""
+vcenter_ip: "10.X.Y.Z"
+vcenter_datacenter: "YOUR_DATA_CENTER_NAME"
+vcenter_cluster: "CLUSTER_NAME"
+
+#Portable IP information Address IBM Cloud for Gov
+portable:
+  subnet: "10.75.30.128/25"
+  gateway: "10.75.30.129"
+  netmask: "255.255.255.128"
+  prefix: "25"
+  # Hint its the last IP address of portable pool. You can obtain this on portable Ip address page
+  broadcast: "10.75.30.255"
+  # Hint its the first IP address of portable pool. You can obtain this on portable Ip address page
+  network: "10.75.30.128"
+  # These IP address are default DNS server in IC4G
+  dns1: "12.127.16.68"
+  dns2: "12.127.16.67"
+
+
+  
+# Pak Helper Node which will act as 
+# installer node for Cloud Paks
+pakhelpernode_IP: "10.75.30.227" 
+
+
+# latest openshift build 
+openshift_build: "4.3"
+
+v_ocp_client: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{openshift_build}}.0/openshift-client-linux-{{openshift_build}}.0.tar.gz"
+
+###############################################################################################################
+#Beyond this point please edit on your own risk
+# The section below in for advance users
+###############################################################################################################
+# you can point to either redhat or centos image
+pakhelpernode_hostname: "pakhelper"
+pakhelper_node_image_url: "https://mirror.umd.edu/centos/7/isos/x86_64/"
+pakhelper_node_image: "CentOS-7-x86_64-DVD-1908.iso"
+pakhelper_node_image_uncompressed_name: "{{ CentOS-7-x86_64-DVD-1908.iso }}"
+
+
+
+
+
+
+

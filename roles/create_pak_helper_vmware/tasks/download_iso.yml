@@ -1,0 +1,52 @@
+---
+
+
+  - name: ansible create directory with mode setting  iso
+    file:
+      path: "{{tmp_space}}"
+      state: directory
+      mode: "u=rw,g=wx,o=rwx"
+
+  - name: Check if genisoimage is installed
+    command: which genisoimage
+
+  - name: Check if iso already fetched
+    stat:
+      path: "{{ tmp_space }}/{{ centos_iso }}"
+    register: iso_install
+
+  - name: Download Centos installation iso file (might take a while)
+    get_url:
+      url: "{{ centos_iso_url }}"
+      dest: "{{ tmp_space }}/{{ centos_iso }}"
+      mode: 0440
+    when: iso_install.stat.exists == False
+
+  - name: Extract open-vm-tools package from ISO
+    iso_extract:
+      image: "{{ tmp_space }}/{{ centos_iso }}"
+      dest: "{{ tmp_space }}"
+      files:
+      - Packages/TRANS.TBL
+
+  - name: Ensure open-vm-tools package is present
+    command: grep "open-vm-tools-.*\.rpm" "{{ tmp_space }}/TRANS.TBL"
+
+  - name: Clean extracted files
+    file:
+      state: absent
+      path: "{{ tmp_space }}/TRANS.TBL"
+
+  - name: create temporary kickstart iso directory
+    tempfile:
+      state: directory
+      suffix: ks
+    register: ks_tmp_dir
+
+  - name: Generate Kickstart file
+    template:
+      src: "{{ role_path }}/templates/kickstart.cfg.j2"
+      dest: "{{ ks_tmp_dir.path }}/KS.CFG"
+
+  - name: Create iso file
+    command: genisoimage -V OEMDRV -o "{{ tmp_space }}/kickstart.iso" "{{ ks_tmp_dir.path }}"

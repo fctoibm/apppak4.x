@@ -1,0 +1,21 @@
+
+
+- hosts: "all"
+  roles:
+    - { role: setup_kvm_server, tags: [ 'kvm' ] }
+    - { role: create_kvm_network, tags: [ 'kvm' ] }
+    - { role: create_pak_helper_kvm, tags: [ 'kvm' ] }
+    - { role: delete_pak_helper_kvm,  tags: [ 'kvmdelete' ] }
+
+
+
+
+
+    - { role: create_pak_helper_vmware, tags: [ 'vmware' ] }
+
+    - { role: entitled_setup, tags: [ 'setupapppak' ] }
+    - { role: pak_install_only, tags: [ 'retry' ] }
+
+       
+    
+

@@ -1,0 +1,216 @@
+---
+    
+
+
+    - name: Check if govc is installed
+      command: which govc
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+
+    - name: Check if govc is configured
+      command: govc about
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+
+
+    - name: Get remote ISO "{{ ds_iso_dir }}/{{ centos_iso }}" info
+      command: govc datastore.ls -json -l -ds "{{ datastore }}" "{{ ds_iso_dir }}/{{ centos_iso }}"
+      register: centos_iso_remote_stat
+      ignore_errors: yes
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+
+    # - name: Extract remote ISO "{{ ds_iso_dir }}/{{ centos_iso }}" size
+    #   set_fact:
+    #     centos_iso_remote_stat: "{{ {'size': 0 if centos_iso_remote_stat.rc != 0 else (centos_iso_remote_stat.stdout | from_json)[0].File[0].FileSize} }}"
+
+    - name: Upload 
+      vsphere_copy:
+        username: "{{ govc_username }}"
+        password: "{{ govc_password }}"
+        validate_certs: no
+        datacenter: "{{ datacenter }}"
+        datastore: "{{ datastore }}"
+        hostname: "{{ host }}"
+        path: "{{ ds_iso_dir }}/{{ centos_iso }}"
+        src: "{{ tmp_space }}/{{ centos_iso }}"
+        timeout: 1800
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+      when: centos_iso_remote_stat.rc != 0
+
+    - name: Delete existing remote file "{{ ds_iso_dir }}/kickstart.iso"
+      command: govc datastore.rm -ds "{{ datastore }}" "{{ ds_iso_dir }}/kickstart.iso"
+      ignore_errors: yes
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+
+    - name: Upload kickstart.iso to "{{ ds_iso_dir }}/"
+      vsphere_copy:
+        username: "{{ govc_username }}"
+        password: "{{ govc_password }}"
+        validate_certs: no
+        datacenter: "{{ datacenter }}"
+        datastore: "{{ datastore }}"
+        hostname: "{{ host }}"
+        path: "{{ ds_iso_dir }}/kickstart.iso"
+        src: "{{ tmp_space }}/kickstart.iso"
+      
+
+    - name: Remove "{{ template_name }}"
+      vmware_guest:
+        username: "{{ govc_username }}"
+        password: "{{ govc_password }}"
+        validate_certs: no
+        hostname: "{{ host }}"
+        name: "{{ template_name }}"
+        force: true
+        state: absent
+      ignore_errors: yes
+
+
+
+    - name: Create VM "{{ template_name }}"
+      command: govc vm.create -ds "{{ datastore }}" -pool "{{ ressource_pool }}" -net "{{ vm_network }}" -g centos64Guest -m "{{ kvm_vm_ram }}" -c {{ kvm_vm_vcpus }} -disk "{{ kvm_vm_os_disk_size }}" -on=0 -annotation "Centos7 template" "{{ template_name }}"
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+      
+
+    - name: Add CDROM device
+      command: govc device.cdrom.add -vm "{{ template_name }}"
+      register: cdrom1
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+
+    - name: Insert CDROM "{{ cdrom1.stdout }}"
+      command: govc device.cdrom.insert -ds "{{ datastore }}" -device "{{ cdrom1.stdout }}" -vm "{{ template_name }}" "{{ ds_iso_dir }}/{{ centos_iso }}"
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+    
+    - name: Add CDROM device
+      command: govc device.cdrom.add -vm "{{ template_name }}"
+      register: cdrom2
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+
+    - name: Insert CDROM "{{ cdrom2.stdout }}"
+      command: govc device.cdrom.insert -ds "{{ datastore }}" -device "{{ cdrom2.stdout }}" -vm "{{ template_name }}" "{{ ds_iso_dir }}/kickstart.iso"
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+
+    - name: Change boot order
+      command: govc device.boot -vm "{{ template_name }}" -order cdrom,disk
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+
+    - name: Start VM "{{ template_name }}"
+      vmware_guest:
+        username: "{{ govc_username }}"
+        password: "{{ govc_password }}"
+        validate_certs: no
+        hostname: "{{ host }}"
+        name: "{{ template_name }}"
+        state: poweredon
+      delegate_to: localhost
+      register: started
+
+    - name:  Pause the script till VM is deployed
+      pause:
+        prompt: "*****************************************/n Validade Helper-node is deployed through ESXi or vCenter server. /n Press Enter key once verified /n ******************************************************"
+#    - name: Waits for port 22 of any IP to close active connections, don't start checking for 10 seconds
+#      wait_for:
+#        host: "{{ helpernode_IP }}"
+#        port: 22
+#        delay: 1200
+#        state: started
+    
+    - name: Wait for VMware tools to become available
+      vmware_guest_tools_wait:
+        username: "{{ govc_username }}"
+        password: "{{ govc_password }}"
+        validate_certs: no
+        hostname: "{{ host }}"
+        name: "{{ template_name }}"
+        
+    - name: Stop VM "{{ template_name }}"
+      vmware_guest:
+        username: "{{ govc_username }}"
+        password: "{{ govc_password }}"
+        validate_certs: no
+        hostname: "{{ host }}"
+        name: "{{ template_name }}"
+        state: poweredoff
+
+    - name: Change boot order
+      command: govc device.boot -vm "{{ template_name }}" -order disk
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+
+
+    - name: Eject CDROM device "{{ cdrom1.stdout }}"
+      command: govc device.cdrom.eject -device "{{ cdrom1.stdout }}" -vm "{{ template_name }}"
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+
+
+    - name: Eject CDROM device "{{ cdrom2.stdout }}"
+      command: govc device.cdrom.eject -device "{{ cdrom2.stdout }}" -vm "{{ template_name }}"
+      environment:
+       GOVC_USERNAME: "{{ govc_username | default(ansible_env.GOVC_USERNAME) }}"
+       GOVC_PASSWORD: "{{ govc_password | default(ansible_env.GOVC_PASSWORD) }}"
+       GOVC_URL: "{{ govc_url | default(ansible_env.GOVC_URL) }}"
+       GOVC_INSECURE: 1
+
+
+    - name: Stop VM "{{ template_name }}"
+      vmware_guest:
+        username: "{{ govc_username }}"
+        password: "{{ govc_password }}"
+        validate_certs: no
+        hostname: "{{ host }}"
+        name: "{{ template_name }}"
+        state: poweredon
+        wait_for_ip_address: yes
+
+  
+ 
+    

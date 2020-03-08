@@ -1,0 +1,36 @@
+---
+# defaults file for create_helper_kvm
+
+
+
+
+
+
+kvm_vm_hostname: "{{pakhelpernode_hostname}}.{{base_domain_prefix}}.{{base_domain}}"
+kvm_vm_public_ip: "{{ pakhelpernode_IP }}"
+kvm_vm_root_pwd: "passw0rd"
+kvm_vm_base_img: "{{ pakhelper_node_image_uncompressed_name }}"
+kvm_vm_vcpus: "4"
+kvm_vm_ram: "8096"
+kvm_vm_os_disk_name: "{{ kvm_vm_hostname }}"
+kvm_vm_os_disk_size: "200G"
+kvm_vm_nics:
+  - name: eth0
+    bootproto: static
+    onboot: yes
+    ip: "{{ pakhelpernode_IP }}"
+    prefix: "{{ portable.prefix }}"
+    gateway: "{{ portable.gateway }}"
+    dns_server: "{{ portable.dns1 }}"
+    config: "--type network --source {{ kvm_network_name }} --model virtio"
+
+
+
+kvm_timezone: "America/New_York"
+
+disk: vda
+
+helper:
+  name: "{{ pakhelpernode_hostname }}"
+  ipaddr: "{{ pakhelpernode_IP }}"
+  networkifacename: "eth0"

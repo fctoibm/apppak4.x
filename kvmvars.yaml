@@ -1,0 +1,71 @@
+
+
+
+base_domain: "cld.fisc.lab"
+base_domain_prefix: "test"
+
+#openshift information
+ocp_api_fqdn: api.{{ base_domain_prefix }}.{{ base_domain }}
+ocp_auth_fdqn: oauth-openshift.apps.{{ base_domain_prefix }}.{{ base_domain }}
+ocp_api_port: 6443
+ocp_ip: 10.75.30.211
+oc_admin_user: "kubeadmin"
+oc_admin_password: "your admin password"
+
+
+
+# Application Pak Entitlement Information
+ICPA_VERSION: "4.0.1"
+ENTITLED_REGISTRY: "cp.icr.io"
+ENTITLED_REGISTRY_USER: "ekey"
+# Follow the instruction ( https://github.ibm.com/CloudPakOpenContent/cloudpak-entitlement/ )to download token
+ENTITLED_REGISTRY_KEY: ""
+
+
+
+######################################################################################
+
+#Portable IP information Address IBM Cloud for Gov
+portable:
+  subnet: "100.106.11.192/27"
+  gateway: "100.106.11.193"
+  netmask: "255.255.255.224"
+  prefix: 27
+  # Hint its the last IP address of portable pool. You can obtain this on portable Ip address page
+  broadcast: 100.106.11.223
+  # Hint its the first IP address of portable pool. You can obtain this on portable Ip address page
+  network: "100.106.11.192" 
+  # These IP address are default DNS server in IC4G  
+  dns1: "100.100.100.80"
+  dns2: "100.100.100.81"
+  
+# Pak Helper Node which will act as 
+# installer node for Cloud Paks
+pakhelpernode_IP: "100.106.11.201" 
+
+
+# latest openshift build 
+openshift_build: "4.3"
+
+v_ocp_client: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{openshift_build}}.0/openshift-client-linux-{{openshift_build}}.0.tar.gz"
+
+###############################################################################################################
+#Beyond this point please edit on your own risk
+# The section below in for advance users
+###############################################################################################################
+# you can point to either redhat or centos image
+pakhelpernode_hostname: "pakhelper"
+helper_node_image: "CentOS-7-x86_64-GenericCloud.qcow2.xz"
+helper_node_image_url: "https://cloud.centos.org/centos/7/images/"
+pakhelper_node_image_uncompressed_name: "CentOS-7-x86_64-GenericCloud.qcow2"
+
+# Libvirt image directory
+libvirt_image_directory: "/var/lib/libvirt/images" 
+#KVM network name
+kvm_network_name: "openshift4"
+
+
+
+
+
+

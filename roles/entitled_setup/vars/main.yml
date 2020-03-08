@@ -1,0 +1,4 @@
+---
+# vars file for entitled-setup
+
+ocp_client: "{{ v_ocp_client }}"

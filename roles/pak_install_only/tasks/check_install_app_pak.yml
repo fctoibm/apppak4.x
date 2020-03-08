@@ -1,0 +1,11 @@
+
+
+- name: Run the cloud  pak for applicaiton installer check command to check prerequisities
+  shell: "docker run -v ~/.kube:/root/.kube:z -u 0 -t -v /data:/installer/data:z --dns={{ ocp_ip }} -e LICENSE=accept -e ENTITLED_REGISTRY={{ ENTITLED_REGISTRY }} -e ENTITLED_REGISTRY_USER={{ ENTITLED_REGISTRY_USER}}  -e ENTITLED_REGISTRY_KEY={{ ENTITLED_REGISTRY_KEY }} {{ ENTITLED_REGISTRY }}/\"cp/icpa/icpa-installer:{{ ICPA_VERSION }}\" check"
+  tags: retry
+
+- name: Run the cloud  pak for applicaiton installer check command to install
+  shell: "docker run -v ~/.kube:/root/.kube:z -u 0 -t -v /data:/installer/data:z --dns={{ ocp_ip }} -e LICENSE=accept -e ENTITLED_REGISTRY={{ ENTITLED_REGISTRY }} -e ENTITLED_REGISTRY_USER={{ ENTITLED_REGISTRY_USER}}  -e ENTITLED_REGISTRY_KEY={{ ENTITLED_REGISTRY_KEY }} {{ ENTITLED_REGISTRY }}/\"cp/icpa/icpa-installer:{{ ICPA_VERSION }}\" install"
+  tags: retry
+
+

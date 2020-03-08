@@ -1,0 +1,37 @@
+---
+# defaults file for create_helper_vm
+
+
+
+datacenter_name: "{{ vcenter_datacenter }}"
+
+cluster_name: "{{ vcenter_cluster }}"
+
+vcenter_username: "{{ vcenter_username }}"
+
+vcenter_hostname: "{{ vcenter_ip }}"
+
+centos_iso_url: "{{ pakhelper_node_image_url }}/{{ pakhelper_node_image }}"
+centos_iso: "{{ pakhelper_node_image }}"
+tmp_space: "/tmp/centos_image"
+
+
+
+govc_username: "{{vcenter_username}}" # overrides GOVC_USERNAME
+govc_password: "{{ vcenter_password }}" # overrides GOVC_PASSWORD
+govc_url: "https://{{ vcenter_ip }}/sdk"
+govc_insecure: 1
+
+
+
+template_name: "{{pakhelpernode_hostname}}"
+host: "{{ vcenter_ip }}"
+datacenter: "{{vcenter_datacenter }}" # govc ls -t Datacenter
+datastore: "{{ target_esx_datastore }}" # govc ls -t Datastore '/*/datastore/Shared Storages/*'
+ressource_pool: "{{ vcenter_cluster }}/Resources" # govc ls -t ResourcePool '/*/host/*'
+vm_network: "{{ target_esx_portgroup }}" # govc ls -t DistributedVirtualPortgroup '/*/network/*-dvs/VM Network'
+ds_iso_dir: centos_tpl # folder where to place the ISO
+ds_vm_dir: VM_TEMPLATES # folder where to place the VM
+
+helpernode_IP: "{{ pakhelpernode_IP }}"
+helpernode_hostname: "{{ pakhelpernode_hostname }}"

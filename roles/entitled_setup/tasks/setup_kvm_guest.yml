@@ -1,0 +1,87 @@
+---
+# tasks file for setup_kvm_server
+
+#Installing the Software
+
+
+    - name: Install yum utils
+      yum:
+        name: yum-utils
+        state: latest
+
+    - name: Install device-mapper-persistent-data
+      yum:
+        name: device-mapper-persistent-data
+        state: latest
+
+    - name: Install lvm2
+      yum:
+        name: lvm2
+        state: latest
+
+    - name: copy docker cli  rpms
+      copy:
+        src: "{{ role_path }}/files/get-pip.py"
+        dest: /tmp/get-pip.py
+
+        
+    - name: Check to see if pip is already installed.
+      command: "{{ pip }} --version"
+      ignore_errors: true
+      changed_when: false # read-only task
+      check_mode: no
+      register: pip_is_installed
+
+
+
+    - name: Install pip.
+      command: " python  {{ pip_download_dest }}/get-pip.py "
+      become: yes
+      when: pip_is_installed.rc != 0
+
+    - name: Installing NumPy python library using Ansible pip module
+      pip:
+        name: docker-py
+
+    - name: Installing requests-oauthlib python library using Ansible pip module
+      pip:
+        name: requests-oauthlib
+  
+    
+    - name: Add Docker repo
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+        validate_certs: no
+      become: yes
+
+    - name: Install Docker
+      package:
+        name: docker-ce
+        state: latest
+      become: yes
+
+    - name: start docker service
+      systemd:
+        state: started
+        name: docker
+        enabled: yes
+
+    - name: Log into private registry and force re-authorization
+      docker_login:
+        registry: "{{ ENTITLED_REGISTRY }}"
+        username: "{{ ENTITLED_REGISTRY_USER }}"
+        password: "{{ ENTITLED_REGISTRY_KEY }}"
+        reauthorize: yes
+
+    - name: ansible create directory data
+      file:
+        path: /data
+        state: directory
+
+    - name: run docker commmand 
+      command: "docker run -v /data:/data:z -u 0 -e LICENSE=accept {{ ENTITLED_REGISTRY }}/\"cp/icpa/icpa-installer:{{ ICPA_VERSION }}\" cp -r \"data/*\" /data"
+
+
+
+

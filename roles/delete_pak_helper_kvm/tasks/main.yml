@@ -1,0 +1,44 @@
+---
+# tasks file for clean
+
+- name: delete tmp folder
+  shell: "rm -rf /tmp/*"
+
+
+- name: delete knows_host
+  shell: "rm -rf /root/.ssh/known_hosts"
+    
+
+
+
+- name: undefine vm
+  virt:
+    command: shutdown
+    name: "{{pakhelpernode_hostname}}.{{base_domain_prefix}}.{{base_domain}}"
+  ignore_errors: true
+
+- name: undefine vm
+  virt:
+    command: destroy
+    name: "{{pakhelpernode_hostname}}.{{base_domain_prefix}}.{{base_domain}}"
+  ignore_errors: true
+
+
+- name: undefine vm
+  virt:
+    command: undefine
+    name: "{{pakhelpernode_hostname}}.{{base_domain_prefix}}.{{base_domain}}"
+  ignore_errors: true
+
+
+
+
+
+
+
+
+- name: remove all qcow2 file
+  command: "rm -rf /var/lib/libvirt/images/{{pakhelpernode_hostname}}.{{base_domain_prefix}}.{{base_domain}}.qcow2"
+
+- name: unset ssh connection 
+  shell: "unset SSH_AUTH_SOCK"

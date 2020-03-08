@@ -1,0 +1,4 @@
+all:
+  hosts:
+    entitled-setup:
+    ansible_python_interpreter: python

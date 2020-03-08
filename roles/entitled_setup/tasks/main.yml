@@ -1,0 +1,7 @@
+# tasks file for create_helper_kvm
+
+- include: setup_kvm_guest.yml
+- include: install_oc.yml
+- include: add_ocp_host.yml
+- include: check_install_app_pak.yml
+
