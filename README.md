@@ -43,7 +43,7 @@ Edit the [hosts](./hosts) file vmguest section to match the pakhelper node infor
 
 ```
 iptables-save > /root/savedrules_pak.txt
-iptables-restore> /root/savedrules.txt
+iptables-restore < /root/savedrules.txt
 ```
 
 ### Execute the Playbook ###
