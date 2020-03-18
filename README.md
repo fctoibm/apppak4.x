@@ -110,7 +110,7 @@ ansible-playbook -v -e @YOUR_VARS.YML  play.yaml -t retry --limit "vmguest"
 
 On KVM Host run the following commands:
 ```
-iptables-restore> /root/savedrules_pak.txt
+iptables-restore < /root/savedrules_pak.txt
 ```
 
 
