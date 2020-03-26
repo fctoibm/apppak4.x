@@ -89,7 +89,7 @@ ansible-playbook -v -e @vmwarevars.yaml play.yaml -t vmware --limit "vmwarehost"
 Option Three (Clinet Only)
 --------------------------
 --------------------------
-Depending on the above flow the -e @<input variable YOUR_VARS.YML> could be vmwarevars.yml or kvmvars.yml
+Depending on the above flow the -e @<input variable YOUR_VARS.YAML> could be vmwarevars.yaml or kvmvars.yaml
 
 ```
 ansible-playbook -vv -e @YOUR_VARS.YML play.yaml -t setupapppak --limit "vmguest"
