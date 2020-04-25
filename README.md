@@ -1,8 +1,8 @@
-Installing CP4App 4.X
+Installing Cloud Pak for Application 4.X
 ========================================
 
 
-The guide will get you up and running with the CP4App 4.x (CP4App). on OCP 4.3. The setup assumes OCP 4.3 is already installed and administration rights access available to deploy the Cloud Pak.
+The guide will get you up and running with the Cloud Pak for Application 4.x (CP4App). on OCP 4.3. The setup assumes OCP 4.3 is already installed and administration rights access available to deploy the Cloud Pak.
 The guide assumes OCP 4.3 installed using the same GitHub repository if this is not the case, please make sure the OCP worker node capacity matches the following table:  
 
 ## Hardware requirements
