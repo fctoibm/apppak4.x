@@ -1,7 +1,6 @@
 Installing Cloud Pak for Application 4.X
 ========================================
 
-
 The guide will get you up and running with the Cloud Pak for Application 4.x (CP4App). on OCP 4.3. The setup assumes OCP 4.3 is already installed and administration rights access available to deploy the Cloud Pak.
 
 ## Hardware requirements
@@ -56,8 +55,6 @@ This playbook will create the CP4App Helper VM guest on KVM Host. The new VM wil
 Run the playbook to setup the kvmhost
 ansible-playbook -v -e @kvmvars.yaml play.yaml -t kvm --limit "kvmhost"
 ```
-
-
 
 Step One for VMWare Only
 ------------------------
