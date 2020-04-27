@@ -35,15 +35,15 @@ cd /opt/apppak4.x
 ```
 
 Edit the [kvmvars.yaml](./kvmvars.yaml) file with the IP addresses that will be assigned to the PakHelper node. The IP addresses need to be correct in order to properly access the OpenShift servers.
-Edit the [hosts](./hosts) file **vmguest** section to match the PakHelper node information from the kvmvars.yaml file from the KVM OCP installation.
+Edit the [hosts](./hosts) file **vmguest** section to match the PakHelper node information from the [kvmvars.yaml](./kvmvars.yaml) file from the KVM OCP installation.
 
-> **NOTE:** If the setup is performed on a KVM host infrastructure, then resdtore the iptables rules by issuing following commands on KVM host server:
+> **NOTE:** If the setup is performed on a KVM host infrastructure, then restore the iptables rules by issuing following commands on KVM host server:
 
 ```
 iptables-save > /root/savedrules_pak.txt
 iptables-restore < /root/savedrules.txt
 ```
-> **NOTE:** The ***savedrules.txt*** file is the one generated as part of the KVM OCP 4.3 deployment found in the
+> **NOTE:** The ***savedrules.txt*** file is generated as part of the KVM OCP 4.3 deployment found in the
 [ocpkvm4.3 repository](https://github.com/fctoibm/ocpkvm4.3).
 
 ### Execute the Playbook ###
@@ -68,7 +68,7 @@ cd /opt/apppak4.x
 ```
 
 Edit the [vmwarevars.yaml](./vmwarevars.yaml) file with the IP addresses that will be assigned to the PakHelper node. The IP addresses need to be correct in order to properly access the OpenShift servers.
-Edit the [hosts](./hosts) file **vmguest** section to match the PakHelper node information from the vmwarevars.yaml file from the KVM OCP installation.
+Edit the [hosts](./hosts) file **vmguest** section to match the PakHelper node information from the [vmwarevars.yaml](./vmwarevars.yaml) file from the KVM OCP installation.
 
 
 ### Execute the Playbook ###
@@ -76,7 +76,7 @@ Edit the [hosts](./hosts) file **vmguest** section to match the PakHelper node i
 This play book will create Application Pak Helper VM guest on VMware Host. The new VM will access the OCP servers and  public network access to download yum packages.
 
 
-> **NOTE:** If the client is already available, please proceed to option 3.
+> **NOTE:** If the client is already available, please proceed to step 3.
 
 ```
 Run the playbook to setup the kvmhost
