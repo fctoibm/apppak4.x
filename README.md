@@ -4,7 +4,7 @@ Installing Cloud Pak for Application 4.X
 The guide will get you up and running with the Cloud Pak for Application 4.x (CP4App). on OCP 4.3. The setup assumes OCP 4.3 is already installed and administration rights access available to deploy the Cloud Pak.
 
 ## Hardware requirements
-The guide assumes OCP 4.3 installed using the same GitHub repository if this is not the case, please make sure the OCP worker node capacity matches the following table:
+The guide assumes OCP 4.3 installed using the deployment package from either the [ocpvmware4.3 repository](https://github.com/fctoibm/ocpvmware4.3) or [ocpkvm4.3 repository](https://github.com/fctoibm/ocpkvm4.3). If you are working with an OCP 4.3 installation deployed some other way, ensure that it will support the capacity defined in the following table:
 
 | Software      | vCPU   | Mem  | HDD | Node
 | ------          | ------: |----:  | ---: | :------: |
@@ -35,15 +35,16 @@ cd /opt/apppak4.x
 ```
 
 Edit the [kvmvars.yaml](./kvmvars.yaml) file with the IP addresses that will be assigned to the PakHelper node. The IP addresses need to be correct in order to properly access the OpenShift servers.
-Edit the [hosts](./hosts) file **vmguest** section to match the PakHelper node information. This should be similar to the kvmvars.yaml file.
+Edit the [hosts](./hosts) file **vmguest** section to match the PakHelper node information from the kvmvars.yaml file from the KVM OCP installation.
 
-
-> **NOTE:** If the setup is performed on a KVM host infrastructure, then delete the iptables forward rules by issuing following commands on KVM host server
+> **NOTE:** If the setup is performed on a KVM host infrastructure, then resdtore the iptables rules by issuing following commands on KVM host server:
 
 ```
 iptables-save > /root/savedrules_pak.txt
 iptables-restore < /root/savedrules.txt
 ```
+> **NOTE:** The ***savedrules.txt*** file is the one generated as part of the KVM OCP 4.3 deployment found in the
+[ocpkvm4.3 repository](https://github.com/fctoibm/ocpkvm4.3).
 
 ### Execute the Playbook ###
 
@@ -67,7 +68,7 @@ cd /opt/apppak4.x
 ```
 
 Edit the [vmwarevars.yaml](./vmwarevars.yaml) file with the IP addresses that will be assigned to the PakHelper node. The IP addresses need to be correct in order to properly access the OpenShift servers.
-Edit the [hosts](./hosts) file **vmguest** section to match the PakHelper node information. This should be similar to the vmwarevars.yaml file
+Edit the [hosts](./hosts) file **vmguest** section to match the PakHelper node information from the vmwarevars.yaml file from the KVM OCP installation.
 
 
 ### Execute the Playbook ###
